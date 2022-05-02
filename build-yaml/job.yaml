@@ -1,0 +1,48 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: nginx-build
+  name: nginx-build
+  namespace: default
+spec:
+  ttlSecondsAfterFinished: 3
+  backoffLimit: 3
+  completionMode: NonIndexed
+  completions: 1
+  parallelism: 1
+  suspend: false
+  template:
+    metadata:
+      labels:
+        job-name: nginx-build
+    spec:
+      containers:
+        - args:
+            - --dockerfile=/workspace/Dockerfile
+            - --context=dir://workspace
+            - --tarPath=/workspace/result.tar
+            - --no-push
+            #- --destination=nginx-custom:latest
+          image: gcr.io/kaniko-project/executor:v1.3.0
+          imagePullPolicy: Always
+          name: nginx-build
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /workspace/Dockerfile
+              name: dockerfile
+              subPath: Dockerfile
+          workingDir: /workspace
+      restartPolicy: Never
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - configMap:
+            items:
+              - key: Dockerfile
+                path: Dockerfile
+            name: buildcommand
+          name: dockerfile
+
