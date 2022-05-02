@@ -17,6 +17,7 @@ spec:
       creationTimestamp: null
       labels:
         app: test
+        last: no
     spec:
       containers:
       - image: nginx:latest
