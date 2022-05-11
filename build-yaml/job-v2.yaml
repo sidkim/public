@@ -1,0 +1,36 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: nginx-build
+  name: nginx-build
+  namespace: default
+spec:
+  ttlSecondsAfterFinished: 2
+  backoffLimit: 1
+  completionMode: NonIndexed
+  completions: 1
+  parallelism: 1
+  suspend: false
+  template:
+    metadata:
+      labels:
+        job-name: nginx-build
+    spec:
+      containers:
+        - args:
+            - --dockerfile=Dockerfile
+            - --context=git://github.com/sidkim/public.git
+            - --context-sub-path=build-yaml
+            - --tarPath=/tmp/result.tar
+            - --no-push
+            #- --destination=nginx-custom:latest
+          image: gcr.io/kaniko-project/executor:latest
+          imagePullPolicy: IfNotPresent
+          name: nginx-build
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      restartPolicy: Never
+      schedulerName: default-scheduler
+
