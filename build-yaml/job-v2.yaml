@@ -25,7 +25,7 @@ spec:
             - --context-sub-path=build-yaml
             - --tarPath=/result.tar
             - --no-push
-            #- --destination=nginx-custom:latest
+            - --destination=image
           image: gcr.io/kaniko-project/executor:latest
           imagePullPolicy: IfNotPresent
           name: nginx-build
