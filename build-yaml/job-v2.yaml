@@ -23,7 +23,7 @@ spec:
             - --dockerfile=Dockerfile
             - --context=git://github.com/sidkim/public.git
             - --context-sub-path=build-yaml
-            - --tarPath=/tmp/result.tar
+            - --tarPath=/result.tar
             - --no-push
             #- --destination=nginx-custom:latest
           image: gcr.io/kaniko-project/executor:latest
